@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>see GPT - 全能智能助手</title>
+    <title>AllAI - 全能智能助手</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
@@ -11,12 +11,12 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#10A37F',
-                        secondary: '#3B82F6',
+                        doubao: '#00B42A',
+                        deepseek: '#6B7280',
+                        yuanbao: '#FF7D00',
+                        chatgpt: '#10A37F',
                         dark: '#1F2937',
-                        light: '#F3F4F6',
-                        accent: '#8B5CF6',
-                        danger: '#EF4444'
+                        light: '#F3F4F6'
                     },
                     fontFamily: {
                         inter: ['Inter', 'system-ui', 'sans-serif'],
@@ -40,57 +40,77 @@
             .message-card {
                 @apply rounded-xl p-4 shadow-sm max-w-[85%] break-words;
             }
-            .typing-animation {
+            .typing-dot {
                 display: inline-block;
-                width: 12px;
-                height: 12px;
+                width: 8px;
+                height: 8px;
                 border-radius: 50%;
                 background-color: #6B7280;
                 animation: typing 1.4s infinite ease-in-out both;
             }
-            .typing-animation:nth-child(1) {
+            .typing-dot:nth-child(1) {
                 animation-delay: -0.32s;
             }
-            .typing-animation:nth-child(2) {
+            .typing-dot:nth-child(2) {
                 animation-delay: -0.16s;
             }
             @keyframes typing {
                 0%, 80%, 100% { transform: scale(0); }
                 40% { transform: scale(1); }
             }
+            .ai-card {
+                @apply border rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer flex items-center gap-3;
+            }
         }
     </style>
 </head>
 <body class="font-inter bg-gray-50 text-dark h-screen flex flex-col overflow-hidden">
-    <!-- 登录模态框 -->
-    <div id="loginModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-xl p-6 w-full max-w-md relative">
-            <button id="closeLoginBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <i class="fa fa-times"></i>
-            </button>
-            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
-                    <i class="fa fa-robot"></i>
+    <!-- AI选择模态框 -->
+    <div id="aiSelectModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl p-6 w-full max-w-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">选择AI智能体</h3>
+                <button id="closeAiSelectBtn" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div class="ai-card border-doubao text-doubao" data-ai="doubao">
+                    <div class="w-10 h-10 rounded-full bg-doubao/20 flex items-center justify-center">
+                        <i class="fa fa-comments"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium">豆包AI</h4>
+                        <p class="text-xs text-gray-500">生活助手·文案创作·知识问答</p>
+                    </div>
                 </div>
-                <span>see GPT 登录</span>
-            </h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
-                    <input type="email" id="loginEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="your@email.com">
-                    <p id="emailError" class="text-red-500 text-xs mt-1 hidden">请输入有效的邮箱地址</p>
+                <div class="ai-card border-deepseek text-deepseek" data-ai="deepseek">
+                    <div class="w-10 h-10 rounded-full bg-deepseek/20 flex items-center justify-center">
+                        <i class="fa fa-line-chart"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium">DeepSeek</h4>
+                        <p class="text-xs text-gray-500">数据分析·代码解释·逻辑推理</p>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
-                    <input type="password" id="loginPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="至少6位字符">
-                    <p id="passwordError" class="text-red-500 text-xs mt-1 hidden">密码长度至少6位</p>
+                <div class="ai-card border-yuanbao text-yuanbao" data-ai="yuanbao">
+                    <div class="w-10 h-10 rounded-full bg-yuanbao/20 flex items-center justify-center">
+                        <i class="fa fa-home"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium">元宝AI</h4>
+                        <p class="text-xs text-gray-500">生活技巧·实用建议·本地服务</p>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" id="rememberMe" class="rounded text-primary">
-                    <label for="rememberMe" class="text-sm text-gray-600">记住我</label>
+                <div class="ai-card border-chatgpt text-chatgpt" data-ai="chatgpt">
+                    <div class="w-10 h-10 rounded-full bg-chatgpt/20 flex items-center justify-center">
+                        <i class="fa fa-code"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium">ChatGPT</h4>
+                        <p class="text-xs text-gray-500">代码生成·编程调试·创意写作</p>
+                    </div>
                 </div>
-                <button id="loginBtn" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors">登录</button>
-                <p class="text-center text-sm text-gray-500">没有账号？<span class="text-primary cursor-pointer">注册</span></p>
             </div>
         </div>
     </div>
@@ -116,20 +136,17 @@
             
             <!-- 历史记录 -->
             <div class="flex-1 overflow-y-auto scrollbar-hide p-2" id="historyList">
-                <div class="history-item p-3 rounded-lg hover:bg-light cursor-pointer active bg-light/50 border-l-2 border-primary">
+                <div class="history-item p-3 rounded-lg hover:bg-light cursor-pointer active bg-light/50 border-l-2 border-chatgpt">
                     <p class="text-sm font-medium truncate">新对话</p>
                     <p class="text-xs text-gray-500 truncate mt-1">刚刚</p>
                 </div>
             </div>
             
-            <div class="p-4 border-t border-gray-200 space-y-2">
-                <button id="showLoginBtn" class="flex items-center gap-2 w-full p-2 rounded-lg hover:bg-light text-sm">
-                    <i class="fa fa-user-circle-o"></i>
-                    <span>登录账号</span>
-                </button>
-                <button id="clearHistoryBtn" class="flex items-center gap-2 w-full p-2 rounded-lg hover:bg-light text-sm text-red-500">
-                    <i class="fa fa-trash-o"></i>
-                    <span>清空历史</span>
+            <div class="p-4 border-t border-gray-200">
+                <button id="switchAiBtn" class="flex items-center gap-2 w-full p-2 rounded-lg hover:bg-light text-sm">
+                    <i class="fa fa-robot"></i>
+                    <span>切换AI智能体</span>
+                    <span id="currentAiName" class="ml-auto text-sm font-medium text-chatgpt">ChatGPT</span>
                 </button>
             </div>
         </div>
@@ -143,19 +160,16 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     <div class="flex items-center gap-2">
-                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
-                            <i class="fa fa-robot"></i>
+                        <div id="aiAvatar" class="w-10 h-10 rounded-full bg-chatgpt flex items-center justify-center text-white">
+                            <i class="fa fa-code"></i>
                         </div>
-                        <h1 class="font-bold">see GPT</h1>
+                        <h1 class="font-bold">AllAI</h1>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
                     <button class="p-2 rounded-full hover:bg-light relative">
                         <i class="fa fa-bell-o"></i>
                         <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
-                    <button id="toggleSidePanelBtn" class="p-2 rounded-full hover:bg-light">
-                        <i class="fa fa-sliders"></i>
                     </button>
                 </div>
             </div>
@@ -164,18 +178,17 @@
             <div id="chatContainer" class="flex-1 p-4 md:p-6 overflow-y-auto scrollbar-hide space-y-6">
                 <!-- 欢迎消息 -->
                 <div class="flex items-start gap-3">
-                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
-                        <i class="fa fa-robot"></i>
+                    <div id="aiAvatarWelcome" class="w-10 h-10 rounded-full bg-chatgpt flex items-center justify-center text-white flex-shrink-0">
+                        <i class="fa fa-code"></i>
                     </div>
                     <div class="message-card bg-white">
-                        <p>您好！我是 see GPT 智能助手，可帮您实现以下功能：</p>
+                        <p>您好！我是 AllAI 智能助手，当前为您启用 <span class="font-bold text-chatgpt">ChatGPT</span> 模式，可帮您实现以下功能：</p>
                         <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
-                            <li>自然语言对话、多轮上下文理解</li>
-                            <li>代码生成、调试、解释</li>
-                            <li>文案创作、创意故事、诗歌生成</li>
-                            <li>翻译、摘要、知识问答</li>
+                            <li>代码生成、调试、解释（Python、JavaScript等多语言）</li>
+                            <li>创意写作、文案创作、故事生成</li>
+                            <li>知识问答、概念解释、逻辑推理</li>
                         </ul>
-                        <p class="text-xs text-gray-500 mt-2">请输入您的问题或指令，支持直接触发功能（如“生成Python冒泡排序代码”）</p>
+                        <p class="text-xs text-gray-500 mt-2">可点击左侧“切换AI智能体”选择豆包、DeepSeek、元宝等不同助手，也可直接输入指令（如“生成Python冒泡排序代码”）</p>
                     </div>
                 </div>
             </div>
@@ -184,24 +197,24 @@
             <div class="bg-white border-t border-gray-200 p-3">
                 <div class="flex flex-wrap gap-1 mb-2">
                     <button class="feature-btn text-sm" data-feature="code">
-                        <i class="fa fa-code text-primary"></i>
+                        <i class="fa fa-code text-chatgpt"></i>
                         <span>生成代码</span>
                     </button>
                     <button class="feature-btn text-sm" data-feature="write">
-                        <i class="fa fa-pencil text-primary"></i>
+                        <i class="fa fa-pencil text-doubao"></i>
                         <span>创作文案</span>
                     </button>
+                    <button class="feature-btn text-sm" data-feature="analyze">
+                        <i class="fa fa-line-chart text-deepseek"></i>
+                        <span>数据分析</span>
+                    </button>
+                    <button class="feature-btn text-sm" data-feature="life">
+                        <i class="fa fa-home text-yuanbao"></i>
+                        <span>生活助手</span>
+                    </button>
                     <button class="feature-btn text-sm" data-feature="translate">
-                        <i class="fa fa-language text-primary"></i>
+                        <i class="fa fa-language text-gray-600"></i>
                         <span>翻译</span>
-                    </button>
-                    <button class="feature-btn text-sm" data-feature="summarize">
-                        <i class="fa fa-file-text-o text-primary"></i>
-                        <span>生成摘要</span>
-                    </button>
-                    <button class="feature-btn text-sm" data-feature="explain">
-                        <i class="fa fa-question-circle text-primary"></i>
-                        <span>知识解释</span>
                     </button>
                 </div>
 
@@ -211,13 +224,13 @@
                         id="messageInput" 
                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary resize-none"
                         rows="3"
-                        placeholder="输入问题或指令（支持直接触发功能：生成代码/创作文案/翻译...）"
+                        placeholder="输入问题或指令（支持直接触发功能：生成代码/创作文案/数据分析...）"
                     ></textarea>
                     <div class="absolute right-2 bottom-2 flex items-center gap-1">
                         <button id="voiceInputBtn" class="p-2 rounded-full hover:bg-light text-gray-600">
                             <i class="fa fa-microphone"></i>
                         </button>
-                        <button id="sendMessageBtn" class="bg-primary text-white p-2 rounded-full hover:bg-primary/90">
+                        <button id="sendMessageBtn" class="bg-chatgpt text-white p-2 rounded-full hover:bg-chatgpt/90">
                             <i class="fa fa-paper-plane"></i>
                         </button>
                     </div>
@@ -225,56 +238,25 @@
                 <p class="text-xs text-gray-500 mt-2 ml-4">按 Shift+Enter 换行，Enter 发送 | 支持直接输入"生成代码/创作文案"触发功能</p>
             </div>
         </div>
-
-        <!-- 右侧边栏 - 功能面板 -->
-        <div id="sidePanel" class="w-72 bg-white border-l border-gray-200 flex flex-col hidden lg:flex transition-all duration-300">
-            <div class="p-4 border-b border-gray-200">
-                <h2 class="font-bold text-lg">功能面板</h2>
-            </div>
-            
-            <!-- 选项卡 -->
-            <div class="flex border-b border-gray-200">
-                <button class="flex-1 py-2 text-sm font-medium text-primary border-b-2 border-primary">收藏</button>
-                <button class="flex-1 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">历史记录</button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto scrollbar-hide p-4">
-                <div id="favoritesSection">
-                    <p class="text-sm text-gray-500 mb-3">您还没有收藏任何对话</p>
-                    <div class="text-center py-6">
-                        <i class="fa fa-star-o text-4xl text-gray-300 mb-2"></i>
-                        <p class="text-sm text-gray-400">收藏重要对话以便日后查看</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
         // DOM元素
-        const loginModal = document.getElementById('loginModal');
-        const showLoginBtn = document.getElementById('showLoginBtn');
-        const loginBtn = document.getElementById('loginBtn');
-        const closeLoginBtn = document.getElementById('closeLoginBtn');
-        const loginEmail = document.getElementById('loginEmail');
-        const loginPassword = document.getElementById('loginPassword');
-        const rememberMe = document.getElementById('rememberMe');
-        const emailError = document.getElementById('emailError');
-        const passwordError = document.getElementById('passwordError');
+        const aiSelectModal = document.getElementById('aiSelectModal');
+        const closeAiSelectBtn = document.getElementById('closeAiSelectBtn');
+        const switchAiBtn = document.getElementById('switchAiBtn');
+        const currentAiName = document.getElementById('currentAiName');
+        const aiAvatar = document.getElementById('aiAvatar');
+        const aiAvatarWelcome = document.getElementById('aiAvatarWelcome');
         const historyPanel = document.getElementById('historyPanel');
         const toggleHistoryBtn = document.getElementById('toggleHistoryBtn');
-        const sidePanel = document.getElementById('sidePanel');
-        const toggleSidePanelBtn = document.getElementById('toggleSidePanelBtn');
         const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendMessageBtn = document.getElementById('sendMessageBtn');
         const newChatBtn = document.getElementById('newChatBtn');
-        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
         const searchHistoryInput = document.getElementById('searchHistoryInput');
         const historyList = document.getElementById('historyList');
         const voiceInputBtn = document.getElementById('voiceInputBtn');
-        
-        // 功能按钮
         const featureButtons = document.querySelectorAll('[data-feature]');
         
         // 应用状态
@@ -284,13 +266,39 @@
         };
         let favorites = [];
         let isLoading = false;
-        let currentUser = null; // 当前登录用户
+        let currentAI = 'chatgpt'; // 默认ChatGPT
+        const aiConfigs = {
+            doubao: { 
+                name: '豆包AI', 
+                color: 'doubao', 
+                icon: 'fa-comments',
+                features: '生活助手·文案创作·知识问答'
+            },
+            deepseek: { 
+                name: 'DeepSeek', 
+                color: 'deepseek', 
+                icon: 'fa-line-chart',
+                features: '数据分析·代码解释·逻辑推理'
+            },
+            yuanbao: { 
+                name: '元宝AI', 
+                color: 'yuanbao', 
+                icon: 'fa-home',
+                features: '生活技巧·实用建议·本地服务'
+            },
+            chatgpt: { 
+                name: 'ChatGPT', 
+                color: 'chatgpt', 
+                icon: 'fa-code',
+                features: '代码生成·编程调试·创意写作'
+            }
+        };
         
         // 初始化
         function init() {
             // 从本地存储加载数据
             loadFromLocalStorage();
-            checkLoginStatus(); // 检查登录状态
+            updateHistoryList();
             
             // 事件监听
             bindEvents();
@@ -298,34 +306,21 @@
         
         // 绑定事件
         function bindEvents() {
-            // 登录相关
-            showLoginBtn.addEventListener('click', () => loginModal.classList.remove('hidden'));
-            closeLoginBtn.addEventListener('click', () => loginModal.classList.add('hidden'));
-            loginBtn.addEventListener('click', validateLogin);
-            loginModal.addEventListener('click', (e) => {
-                if (e.target === loginModal) loginModal.classList.add('hidden');
-            });
-            
-            // 输入验证
-            loginEmail.addEventListener('input', () => {
-                if (emailError.classList.contains('hidden') === false) {
-                    validateEmail();
-                }
-            });
-            loginPassword.addEventListener('input', () => {
-                if (passwordError.classList.contains('hidden') === false) {
-                    validatePassword();
-                }
+            // AI选择
+            switchAiBtn.addEventListener('click', () => aiSelectModal.classList.remove('hidden'));
+            closeAiSelectBtn.addEventListener('click', () => aiSelectModal.classList.add('hidden'));
+            document.querySelectorAll('.ai-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const ai = card.dataset.ai;
+                    switchAI(ai);
+                    aiSelectModal.classList.add('hidden');
+                });
             });
             
             // 面板切换
             toggleHistoryBtn.addEventListener('click', () => {
                 historyPanel.classList.toggle('hidden');
                 historyPanel.classList.toggle('flex');
-            });
-            toggleSidePanelBtn.addEventListener('click', () => {
-                sidePanel.classList.toggle('hidden');
-                sidePanel.classList.toggle('flex');
             });
             
             // 发送消息
@@ -337,28 +332,20 @@
                 }
             });
             
-            // 新对话与历史记录管理
+            // 新对话
             newChatBtn.addEventListener('click', createNewChat);
-            clearHistoryBtn.addEventListener('click', () => {
-                if (confirm('确定要清空所有历史记录吗？此操作不可恢复')) {
-                    chatHistory = {};
-                    createNewChat();
-                    saveToLocalStorage();
-                    updateHistoryList();
-                    showNotification('历史记录已清空');
-                }
-            });
+            
+            // 搜索历史
             searchHistoryInput.addEventListener('input', searchHistory);
             
             // 功能按钮
             featureButtons.forEach(btn => {
                 btn.addEventListener('click', () => handleFeature(btn.dataset.feature));
             });
-
-            // 语音输入按钮
+            
+            // 语音输入
             voiceInputBtn.addEventListener('click', () => {
                 showNotification('正在聆听...');
-                // 模拟语音识别
                 setTimeout(() => {
                     const voiceText = "这是一段语音输入的示例文本，您可以直接编辑或发送。";
                     messageInput.value = voiceText;
@@ -367,108 +354,40 @@
             });
         }
         
-        // 验证登录表单
-        function validateLogin() {
-            const isEmailValid = validateEmail();
-            const isPasswordValid = validatePassword();
+        // 切换AI智能体
+        function switchAI(ai) {
+            currentAI = ai;
+            const config = aiConfigs[ai];
+            currentAiName.textContent = config.name;
+            aiAvatar.className = `w-10 h-10 rounded-full bg-${config.color} flex items-center justify-center text-white`;
+            aiAvatar.innerHTML = `<i class="fa ${config.icon}"></i>`;
+            aiAvatarWelcome.className = `w-10 h-10 rounded-full bg-${config.color} flex items-center justify-center text-white flex-shrink-0`;
+            aiAvatarWelcome.innerHTML = `<i class="fa ${config.icon}"></i>`;
+            sendMessageBtn.className = `bg-${config.color} text-white p-2 rounded-full hover:bg-${config.color}/90`;
             
-            if (isEmailValid && isPasswordValid) {
-                // 模拟登录成功
-                const user = {
-                    email: loginEmail.value,
-                    name: loginEmail.value.split('@')[0] // 用邮箱前缀作为用户名
-                };
-                
-                // 保存登录状态
-                currentUser = user;
-                if (rememberMe.checked) {
-                    localStorage.setItem('seeGptUser', JSON.stringify(user));
-                } else {
-                    sessionStorage.setItem('seeGptUser', JSON.stringify(user));
-                }
-                
-                // 更新界面
-                updateLoginUI();
-                loginModal.classList.add('hidden');
-                showNotification(`欢迎回来，${user.name}！`);
-                
-                // 清空表单
-                loginEmail.value = '';
-                loginPassword.value = '';
-            }
-        }
-        
-        // 验证邮箱
-        function validateEmail() {
-            const email = loginEmail.value.trim();
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (!regex.test(email)) {
-                emailError.classList.remove('hidden');
-                return false;
-            } else {
-                emailError.classList.add('hidden');
-                return true;
-            }
-        }
-        
-        // 验证密码
-        function validatePassword() {
-            const password = loginPassword.value;
-            
-            if (password.length < 6) {
-                passwordError.classList.remove('hidden');
-                return false;
-            } else {
-                passwordError.classList.add('hidden');
-                return true;
-            }
-        }
-        
-        // 检查登录状态
-        function checkLoginStatus() {
-            const savedUser = localStorage.getItem('seeGptUser') || sessionStorage.getItem('seeGptUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateLoginUI();
-            }
-        }
-        
-        // 更新登录状态UI
-        function updateLoginUI() {
-            if (currentUser) {
-                showLoginBtn.innerHTML = `
-                    <i class="fa fa-user-circle"></i>
-                    <span>${currentUser.name}</span>
+            // 更新欢迎语
+            const welcomeMsg = document.querySelector('#chatContainer .message-card');
+            if (welcomeMsg) {
+                welcomeMsg.innerHTML = `
+                    <p>您好！我是 AllAI 智能助手，当前为您启用 <span class="font-bold text-${config.color}">${config.name}</span> 模式，可帮您实现以下功能：</p>
+                    <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
+                        <li>${config.features}</li>
+                    </ul>
+                    <p class="text-xs text-gray-500 mt-2">可点击左侧“切换AI智能体”选择其他助手，也可直接输入指令</p>
                 `;
-                // 登录后可添加退出登录选项
-                showLoginBtn.addEventListener('click', () => {
-                    if (confirm('确定要退出登录吗？')) {
-                        logout();
-                    }
-                }, { once: true });
             }
-        }
-        
-        // 退出登录
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('seeGptUser');
-            sessionStorage.removeItem('seeGptUser');
-            showLoginBtn.innerHTML = '<i class="fa fa-user-circle-o"></i><span>登录账号</span>';
-            showNotification('已退出登录');
-            bindEvents(); // 重新绑定登录按钮事件
+            
+            saveToLocalStorage();
         }
         
         // 搜索历史记录
         function searchHistory() {
             const query = searchHistoryInput.value.toLowerCase().trim();
             if (!query) {
-                updateHistoryList(); // 清空搜索时显示全部
+                updateHistoryList();
                 return;
             }
             
-            // 过滤匹配的历史记录
             const filteredChatIds = Object.keys(chatHistory).filter(chatId => {
                 const chat = chatHistory[chatId];
                 return chat.some(msg => 
@@ -476,7 +395,6 @@
                 );
             });
             
-            // 重新渲染过滤后的历史
             renderFilteredHistory(filteredChatIds);
         }
         
@@ -493,7 +411,6 @@
                 return;
             }
             
-            // 按时间倒序排列
             chatIds.sort((a, b) => new Date(b.split('-')[1]) - new Date(a.split('-')[1]));
             
             chatIds.forEach(chatId => {
@@ -509,7 +426,7 @@
                 const timeString = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
                 
                 const historyItem = document.createElement('div');
-                historyItem.className = `history-item p-3 rounded-lg hover:bg-light cursor-pointer ${chatId === currentChatId ? 'bg-light/50 border-l-2 border-primary' : ''}`;
+                historyItem.className = `history-item p-3 rounded-lg hover:bg-light cursor-pointer ${chatId === currentChatId ? `bg-light/50 border-l-2 border-${aiConfigs[currentAI].color}` : ''}`;
                 historyItem.innerHTML = `
                     <p class="text-sm font-medium truncate">${previewText}</p>
                     <p class="text-xs text-gray-500 truncate mt-1">${timeString}</p>
@@ -534,16 +451,16 @@
                     messageInput.value = '创作文案：';
                     messageInput.focus();
                     break;
+                case 'analyze':
+                    messageInput.value = '数据分析：';
+                    messageInput.focus();
+                    break;
+                case 'life':
+                    messageInput.value = '生活建议：';
+                    messageInput.focus();
+                    break;
                 case 'translate':
                     messageInput.value = '翻译：';
-                    messageInput.focus();
-                    break;
-                case 'summarize':
-                    messageInput.value = '生成摘要：';
-                    messageInput.focus();
-                    break;
-                case 'explain':
-                    messageInput.value = '解释：';
                     messageInput.focus();
                     break;
             }
@@ -556,28 +473,25 @@
             
             // 添加用户消息
             addMessageToChat('user', { type: 'text', content });
-            
-            // 清空输入框
             messageInput.value = '';
             
             // 处理消息并生成AI回复
             handleMessageProcessing(content);
         }
         
-        // 处理消息并生成AI回复（模拟ChatGPT功能）
+        // 处理消息并生成AI回复
         function handleMessageProcessing(content) {
             isLoading = true;
-            // 显示加载动画
             const loadingHtml = `
                 <div class="flex items-start gap-3">
-                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
-                        <i class="fa fa-robot"></i>
+                    <div id="aiAvatarLoading" class="w-10 h-10 rounded-full bg-${aiConfigs[currentAI].color} flex items-center justify-center text-white flex-shrink-0">
+                        <i class="fa ${aiConfigs[currentAI].icon}"></i>
                     </div>
                     <div class="message-card bg-white">
                         <div class="flex items-center gap-2 py-3">
-                            <div class="typing-animation"></div>
-                            <div class="typing-animation"></div>
-                            <div class="typing-animation"></div>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
                         </div>
                     </div>
                 </div>
@@ -585,48 +499,136 @@
             chatContainer.insertAdjacentHTML('beforeend', loadingHtml);
             scrollToBottom();
             
-            // 模拟AI思考延迟
             setTimeout(() => {
                 isLoading = false;
-                const loadingEl = chatContainer.lastElementChild;
+                const loadingEl = document.getElementById('aiAvatarLoading').closest('div');
                 if (loadingEl) loadingEl.remove();
                 
-                // 根据内容类型生成不同响应
                 let response = '';
-                if (content.startsWith('生成代码：')) {
-                    const codePrompt = content.replace('生成代码：', '').trim();
-                    response = generateCodeResponse(codePrompt);
-                } else if (content.startsWith('创作文案：')) {
-                    const writePrompt = content.replace('创作文案：', '').trim();
-                    response = generateWritingResponse(writePrompt);
-                } else if (content.startsWith('翻译：')) {
-                    const translatePrompt = content.replace('翻译：', '').trim();
-                    response = generateTranslationResponse(translatePrompt);
-                } else if (content.startsWith('生成摘要：')) {
-                    const summaryPrompt = content.replace('生成摘要：', '').trim();
-                    response = generateSummaryResponse(summaryPrompt);
-                } else if (content.startsWith('解释：')) {
-                    const explainPrompt = content.replace('解释：', '').trim();
-                    response = generateExplanationResponse(explainPrompt);
-                } else {
-                    // 通用对话响应
-                    response = generateGeneralResponse(content);
+                switch(currentAI) {
+                    case 'doubao':
+                        response = generateDoubaoResponse(content);
+                        break;
+                    case 'deepseek':
+                        response = generateDeepSeekResponse(content);
+                        break;
+                    case 'yuanbao':
+                        response = generateYuanbaoResponse(content);
+                        break;
+                    case 'chatgpt':
+                        response = generateChatGPTResponse(content);
+                        break;
                 }
                 
-                // 添加AI回复
                 addMessageToChat('ai', { type: 'text', content: response });
             }, 2000 + Math.random() * 1500);
         }
         
-        // 生成代码响应
-        function generateCodeResponse(prompt) {
+        // 豆包AI响应
+        function generateDoubaoResponse(content) {
+            const writingExamples = {
+                "产品宣传文案": `
+                    <p><strong>【智能降噪耳机：听见世界，更听见自己】</strong></p>
+                    <p>在喧嚣都市中，您是否渴望一片属于自己的宁静？我们的智能降噪耳机，采用新一代主动降噪技术，可消除99%环境噪音，让您沉浸在纯净音质中。无论是通勤路上的片刻休憩，还是深夜里的音乐盛宴，它都是您的听觉伴侣。轻触操控，持久续航，让每一次聆听都成为享受。</p>
+                `,
+                "故事开头": `
+                    <p><strong>《时间的邮差》</strong></p>
+                    <p>林墨第一次注意到那个邮差时，是在一个下着细雨的周三午后。他穿着洗得发白的绿色制服，戴着一顶旧旧的鸭舌帽，正将一封边缘泛黄的信件塞进23号信箱。奇怪的是，那封信上既没有邮票，也没有收件人地址，只在角落用铅笔写着一行小字：“请于明日黎明前送达，逾期不候。”从那天起，林墨的生活开始变得不再寻常...</p>
+                `,
+                "知识问答": `
+                    <p><strong>关于“元宇宙”的解释：</strong></p>
+                    <p>元宇宙是一个融合了虚拟现实（VR）、增强现实（AR）、区块链、人工智能等技术的虚拟空间，用户可以通过数字 avatar（化身）在其中社交、工作、娱乐，实现与现实世界平行的“第二人生”。它的核心特点包括去中心化、沉浸感、经济系统（如虚拟资产交易）和持续存在性。</p>
+                `
+            };
+            
+            const randomWriting = Object.values(writingExamples)[Math.floor(Math.random() * Object.values(writingExamples).length)];
+            return `
+                <p>根据您的需求，以下是为您生成的内容：</p>
+                ${writingExamples[content] || randomWriting}
+                <p class="mt-2 text-sm text-gray-500">需要调整风格或补充细节吗？</p>
+            `;
+        }
+        
+        // DeepSeek响应
+        function generateDeepSeekResponse(content) {
+            const analysisExamples = {
+                "销售数据趋势": `
+                    <p><strong>销售数据趋势分析（2023年Q1-Q3）</strong></p>
+                    <p>从数据来看，2023年公司销售额呈现“季度递增”趋势：Q1为500万，Q2增长至750万（同比+50%），Q3突破1000万（同比+33%）。增长主要源于新产品线的市场拓展（贡献40%新增收入）和老客户复购率提升（从30%升至45%）。建议Q4加大市场投放，巩固现有增长势头。</p>
+                `,
+                "代码解释": `
+                    <p><strong>Python冒泡排序代码解释</strong></p>
+                    <pre class="bg-dark text-white p-3 rounded-lg text-sm overflow-x-auto">
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        # 最后i个元素已排好序，无需再比较
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                # 交换元素
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
+                    </pre>
+                    <p>这段代码的核心逻辑是：通过两层循环，每次将未排序部分的最大元素“冒泡”到已排序部分的末尾。外层循环控制排序轮数，内层循环负责相邻元素的比较和交换。时间复杂度为O(n²)，空间复杂度为O(1)，适合小规模数据的排序场景。</p>
+                `
+            };
+            
+            const randomAnalysis = Object.values(analysisExamples)[Math.floor(Math.random() * Object.values(analysisExamples).length)];
+            return `
+                <p>根据您的需求，以下是分析结果：</p>
+                ${analysisExamples[content] || randomAnalysis}
+                <p class="mt-2 text-sm text-gray-500">需要更深入的分析或调整维度吗？</p>
+            `;
+        }
+        
+        // 元宝AI响应
+        function generateYuanbaoResponse(content) {
+            const lifeExamples = {
+                "家务窍门": `
+                    <p><strong>家务清洁小窍门</strong></p>
+                    <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
+                        <li>清理水垢：用白醋浸泡30分钟后擦拭，再用清水冲洗即可光亮如新。</li>
+                        <li>去除油污：先用面粉涂抹在油污处吸附油脂，再用湿布擦拭，轻松去油。</li>
+                        <li>镜子防雾：洗澡前在镜子上涂一层肥皂，再用干布擦干，可保持几小时不起雾。</li>
+                        <li>毛衣去球：用电动剃毛器轻轻滑过毛衣表面，快速去除毛球且不损伤衣物。</li>
+                    </ul>
+                `,
+                "健康建议": `
+                    <p><strong>日常健康小建议</strong></p>
+                    <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
+                        <li>每日饮水量：建议喝1500-2000ml水，少量多次饮用，避免一次性大量饮水。</li>
+                        <li>最佳入睡时间：成年人每天需7-8小时睡眠，建议22:00-23:00入睡，保证深度睡眠时间。</li>
+                        <li>久坐提醒：每久坐1小时，起身活动5分钟，做拉伸或散步，预防颈椎腰椎问题。</li>
+                        <li>饮食均衡：每日摄入五谷杂粮、蔬菜水果、肉蛋奶类，保持营养均衡，增强免疫力。</li>
+                    </ul>
+                `,
+                "生活礼仪": `
+                    <p><strong>基本生活礼仪规范</strong></p>
+                    <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
+                        <li>握手礼仪：注视对方，力度适中，时间3-5秒，避免过紧或过松。</li>
+                        <li>公共场所：不大声喧哗，手机调至静音，不影响他人。</li>
+                        <li>用餐礼仪：不随意翻搅菜肴，咀嚼时闭紧嘴巴，不发出声响。</li>
+                        <li>排队礼仪：自觉排队，不插队，与前后保持适当距离，尊重他人权益。</li>
+                    </ul>
+                `
+            };
+            
+            const randomLife = Object.values(lifeExamples)[Math.floor(Math.random() * Object.values(lifeExamples).length)];
+            return `
+                <p>根据您的需求，以下是生活建议：</p>
+                ${lifeExamples[content] || randomLife}
+                <p class="mt-2 text-sm text-gray-500">需要更具体的场景建议吗？</p>
+            `;
+        }
+        
+        // ChatGPT响应
+        function generateChatGPTResponse(content) {
             const codeExamples = {
                 "Python冒泡排序": `
 <pre class="bg-dark text-white p-3 rounded-lg text-sm overflow-x-auto">
 def bubble_sort(arr):
     n = len(arr)
     for i in range(n):
-        # 最后i个元素已经排好序
         for j in range(0, n-i-1):
             if arr[j] > arr[j+1]:
                 arr[j], arr[j+1] = arr[j+1], arr[j]
@@ -735,114 +737,9 @@ print("排序后:", arr)
             
             const randomCode = Object.values(codeExamples)[Math.floor(Math.random() * Object.values(codeExamples).length)];
             return `
-                <p>根据您的需求，生成以下代码：</p>
-                ${codeExamples[prompt] || randomCode}
+                <p>根据您的需求，生成以下内容：</p>
+                ${codeExamples[content] || randomCode}
                 <p class="mt-2 text-sm text-gray-500">需要调整功能或解释代码吗？</p>
-            `;
-        }
-        
-        // 生成文案响应
-        function generateWritingResponse(prompt) {
-            const writingExamples = {
-                "产品宣传文案": `
-                    <p><strong>【智能降噪耳机：听见世界，更听见自己】</strong></p>
-                    <p>在喧嚣都市中，您是否渴望一片属于自己的宁静？我们的智能降噪耳机，采用新一代主动降噪技术，可消除99%环境噪音，让您沉浸在纯净音质中。无论是通勤路上的片刻休憩，还是深夜里的音乐盛宴，它都是您的听觉伴侣。轻触操控，持久续航，让每一次聆听都成为享受。</p>
-                `,
-                "故事开头": `
-                    <p><strong>《时间的邮差》</strong></p>
-                    <p>林墨第一次注意到那个邮差时，是在一个下着细雨的周三午后。他穿着洗得发白的绿色制服，戴着一顶旧旧的鸭舌帽，正将一封边缘泛黄的信件塞进23号信箱。奇怪的是，那封信上既没有邮票，也没有收件人地址，只在角落用铅笔写着一行小字：“请于明日黎明前送达，逾期不候。”从那天起，林墨的生活开始变得不再寻常...</p>
-                `
-            };
-            
-            return `
-                <p>根据您的需求，创作以下内容：</p>
-                ${writingExamples[prompt] || `
-                    <p><strong>【创意短文：${prompt}】</strong></p>
-                    <p>在${prompt}的世界里，每一缕风都藏着故事。当第一缕阳光刺破云层，${prompt}便苏醒了，它用温柔的笔触在大地上勾勒出属于自己的篇章...（此处省略500字创意内容）</p>
-                `}
-                <p class="mt-2 text-sm text-gray-500">需要扩展情节或调整风格吗？</p>
-            `;
-        }
-        
-        // 生成翻译响应
-        function generateTranslationResponse(prompt) {
-            const translationExamples = {
-                "你好，很高兴认识你": "Hello, nice to meet you.",
-                "生活就像一盒巧克力，你永远不知道下一颗是什么味道": "Life is like a box of chocolates, you never know what you're gonna get.",
-                "书籍是人类进步的阶梯": "Books are the ladder of human progress."
-            };
-            
-            return `
-                <p>翻译结果：</p>
-                <div class="mt-2 p-3 bg-light rounded-lg">
-                    <p class="text-sm text-gray-500">原文：${prompt}</p>
-                    <p class="mt-1 font-medium">译文：${translationExamples[prompt] || `[AI翻译] ${prompt.split('').reverse().join('')}`}</p>
-                </div>
-                <div class="mt-2 flex gap-2">
-                    <button class="text-xs px-2 py-1 bg-light rounded hover:bg-gray-200">中 → 英</button>
-                    <button class="text-xs px-2 py-1 bg-light rounded hover:bg-gray-200">中 → 日</button>
-                    <button class="text-xs px-2 py-1 bg-light rounded hover:bg-gray-200">中 → 韩</button>
-                </div>
-            `;
-        }
-        
-        // 生成摘要响应
-        function generateSummaryResponse(prompt) {
-            return `
-                <p>根据您的内容，生成以下摘要：</p>
-                <div class="mt-2 p-3 bg-light rounded-lg">
-                    <p class="text-sm text-gray-500">原文（部分）：${prompt.substring(0, 50)}...</p>
-                    <p class="mt-1">摘要：${prompt}的核心观点是...（此处省略200字摘要内容）</p>
-                </div>
-                <p class="mt-2 text-sm text-gray-500">需要调整摘要长度或重点吗？</p>
-            `;
-        }
-        
-        // 生成知识解释响应
-        function generateExplanationResponse(prompt) {
-            const explanationExamples = {
-                "量子力学": `
-                    <p>量子力学是研究微观粒子（如电子、光子等）行为的物理学分支。它与经典力学的主要区别在于，量子力学认为微观粒子的状态是不确定的，只能用概率来描述（如“波粒二象性”“测不准原理”）。</p>
-                    <p>核心概念包括：</p>
-                    <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
-                        <li><strong>叠加态</strong>：粒子可以同时处于多种状态的叠加，如薛定谔的猫既死又活。</li>
-                        <li><strong>纠缠</strong>：两个粒子无论相距多远，状态都会瞬间相互影响。</li>
-                        <li><strong>量子隧穿</strong>：粒子可以穿过经典力学中无法逾越的势垒。</li>
-                    </ul>
-                    <p>量子力学是现代科技的基础，应用于半导体、激光、核磁共振等领域，也催生了量子计算、量子通信等前沿技术。</p>
-                `,
-                "区块链": `
-                    <p>区块链是一种分布式数据库技术，其核心特点是去中心化、不可篡改、全程留痕。它由一系列按时间顺序排列的“区块”组成，每个区块包含数据记录和前一区块的加密哈希值，形成链式结构。</p>
-                    <p>关键机制包括：</p>
-                    <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
-                        <li><strong>共识机制</strong>：如工作量证明（PoW）、权益证明（PoS），确保分布式节点的数据一致性。</li>
-                        <li><strong>智能合约</strong>：运行在区块链上的自动化脚本，可实现无需中介的可信交易。</li>
-                        <li><strong>加密算法</strong>：如哈希函数、非对称加密，保证数据安全。</li>
-                    </ul>
-                    <p>区块链最初用于比特币等数字货币，现广泛应用于供应链管理、版权保护、跨境支付等领域。</p>
-                `
-            };
-            
-            return `
-                <p>关于“${prompt}”的解释：</p>
-                ${explanationExamples[prompt] || `
-                    <p>${prompt}是一个复杂的概念，涉及...（此处省略300字详细解释）</p>
-                    <p class="mt-2 text-sm text-gray-500">需要更深入的细节或实际应用案例吗？</p>
-                `}
-            `;
-        }
-        
-        // 生成通用对话响应
-        function generateGeneralResponse(content) {
-            const responses = [
-                `您的问题很有意思，${content}的核心是...`,
-                `关于${content}，我可以从以下几个角度分析...`,
-                `您提到的${content}，在实际场景中有这些应用...`,
-                `让我梳理一下，${content}的逻辑是这样的...`
-            ];
-            
-            return responses[Math.floor(Math.random() * responses.length)] + `
-                <p class="mt-2 text-sm text-gray-500">需要进一步展开或换个角度讨论吗？</p>
             `;
         }
         
@@ -887,8 +784,8 @@ print("排序后:", arr)
             } else {
                 messageHtml = `
                     <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
-                            <i class="fa fa-robot"></i>
+                        <div id="aiAvatarMsg" class="w-10 h-10 rounded-full bg-${aiConfigs[currentAI].color} flex items-center justify-center text-white flex-shrink-0">
+                            <i class="fa ${aiConfigs[currentAI].icon}"></i>
                         </div>
                         <div class="message-card bg-white">
                             ${message.content}
@@ -921,7 +818,6 @@ print("排序后:", arr)
                     this.classList.toggle('fa-star');
                     this.classList.toggle('text-yellow-400');
                     
-                    // 收藏逻辑
                     const messageText = this.closest('.message-card').querySelector('p').textContent;
                     const isFavorite = this.classList.contains('fa-star');
                     
@@ -934,14 +830,12 @@ print("排序后:", arr)
                         });
                         showNotification('已收藏该消息');
                     } else {
-                        // 取消收藏
                         const index = favorites.findIndex(fav => fav.text === messageText.substring(0, 50));
                         if (index > -1) favorites.splice(index, 1);
                         showNotification('已取消收藏');
                     }
                     
                     saveToLocalStorage();
-                    updateFavorites();
                 });
             });
             
@@ -949,54 +843,9 @@ print("排序后:", arr)
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const messageText = this.closest('.message-card').querySelector('p').textContent;
-                    // 模拟转发功能
                     navigator.clipboard.writeText(messageText).then(() => {
                         showNotification('消息已复制到剪贴板，可粘贴转发');
                     });
-                });
-            });
-        }
-        
-        // 更新收藏列表
-        function updateFavorites() {
-            const favoritesSection = document.getElementById('favoritesSection');
-            if (favorites.length === 0) {
-                favoritesSection.innerHTML = `
-                    <p class="text-sm text-gray-500 mb-3">您还没有收藏任何对话</p>
-                    <div class="text-center py-6">
-                        <i class="fa fa-star-o text-4xl text-gray-300 mb-2"></i>
-                        <p class="text-sm text-gray-400">收藏重要对话以便日后查看</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            let favoritesHtml = '<div class="space-y-3">';
-            favorites.forEach(fav => {
-                const date = new Date(fav.timestamp);
-                const timeString = `${date.getMonth()+1}月${date.getDate()}日 ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-                
-                favoritesHtml += `
-                    <div class="p-3 bg-light rounded-lg hover:bg-gray-100 transition-colors">
-                        <p class="text-sm">${fav.text}</p>
-                        <p class="text-xs text-gray-500 mt-1">${timeString}</p>
-                        <div class="mt-2 flex justify-end">
-                            <button class="text-xs text-red-500 hover:underline" data-favid="${fav.id}">取消收藏</button>
-                        </div>
-                    </div>
-                `;
-            });
-            favoritesHtml += '</div>';
-            favoritesSection.innerHTML = favoritesHtml;
-            
-            // 绑定取消收藏事件
-            document.querySelectorAll('[data-favid]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const favId = this.dataset.favid;
-                    favorites = favorites.filter(fav => fav.id !== favId);
-                    saveToLocalStorage();
-                    updateFavorites();
-                    showNotification('已取消收藏');
                 });
             });
         }
@@ -1007,16 +856,13 @@ print("排序后:", arr)
             chatHistory[currentChatId] = [];
             chatContainer.innerHTML = `
                 <div class="flex items-start gap-3">
-                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
-                        <i class="fa fa-robot"></i>
+                    <div id="aiAvatarWelcome" class="w-10 h-10 rounded-full bg-${aiConfigs[currentAI].color} flex items-center justify-center text-white flex-shrink-0">
+                        <i class="fa ${aiConfigs[currentAI].icon}"></i>
                     </div>
                     <div class="message-card bg-white">
-                        <p>您好！我是 see GPT 智能助手，可帮您实现以下功能：</p>
+                        <p>您好！我是 AllAI 智能助手，当前为您启用 <span class="font-bold text-${aiConfigs[currentAI].color}">${aiConfigs[currentAI].name}</span> 模式，可帮您实现以下功能：</p>
                         <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
-                            <li>自然语言对话、多轮上下文理解</li>
-                            <li>代码生成、调试、解释</li>
-                            <li>文案创作、创意故事、诗歌生成</li>
-                            <li>翻译、摘要、知识问答</li>
+                            <li>${aiConfigs[currentAI].features}</li>
                         </ul>
                         <p class="text-xs text-gray-500 mt-2">请输入您的问题或指令，支持直接触发功能（如“生成Python冒泡排序代码”）</p>
                     </div>
@@ -1031,7 +877,6 @@ print("排序后:", arr)
         function updateHistoryList() {
             historyList.innerHTML = '';
             
-            // 按时间倒序排列对话
             const sortedChatIds = Object.keys(chatHistory).sort((a, b) => 
                 new Date(b.split('-')[1]) - new Date(a.split('-')[1])
             );
@@ -1040,18 +885,16 @@ print("排序后:", arr)
                 const chat = chatHistory[chatId];
                 if (chat.length === 0) return;
                 
-                // 获取最后一条消息作为预览
                 const lastMessage = chat[chat.length - 1];
                 const previewText = lastMessage.type === 'text' 
                     ? lastMessage.content.substring(0, 20) + (lastMessage.content.length > 20 ? '...' : '')
                     : (lastMessage.role === 'user' ? '上传了文件' : '生成了内容');
                 
-                // 格式化时间
                 const date = new Date(chatId.split('-')[1]);
                 const timeString = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
                 
                 const historyItem = document.createElement('div');
-                historyItem.className = `history-item p-3 rounded-lg hover:bg-light cursor-pointer ${chatId === currentChatId ? 'bg-light/50 border-l-2 border-primary' : ''}`;
+                historyItem.className = `history-item p-3 rounded-lg hover:bg-light cursor-pointer ${chatId === currentChatId ? `bg-light/50 border-l-2 border-${aiConfigs[currentAI].color}` : ''}`;
                 historyItem.innerHTML = `
                     <p class="text-sm font-medium truncate">${previewText}</p>
                     <p class="text-xs text-gray-500 truncate mt-1">${timeString}</p>
@@ -1071,7 +914,6 @@ print("排序后:", arr)
             renderChat();
             updateHistoryList();
             
-            // 在移动设备上切换对话后隐藏历史面板
             if (window.innerWidth < 768) {
                 historyPanel.classList.add('hidden');
                 historyPanel.classList.remove('flex');
@@ -1086,16 +928,13 @@ print("排序后:", arr)
             if (chat.length === 0) {
                 chatContainer.innerHTML = `
                     <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
-                            <i class="fa fa-robot"></i>
+                        <div id="aiAvatarWelcome" class="w-10 h-10 rounded-full bg-${aiConfigs[currentAI].color} flex items-center justify-center text-white flex-shrink-0">
+                            <i class="fa ${aiConfigs[currentAI].icon}"></i>
                         </div>
                         <div class="message-card bg-white">
-                            <p>您好！我是 see GPT 智能助手，可帮您实现以下功能：</p>
+                            <p>您好！我是 AllAI 智能助手，当前为您启用 <span class="font-bold text-${aiConfigs[currentAI].color}">${aiConfigs[currentAI].name}</span> 模式，可帮您实现以下功能：</p>
                             <ul class="list-disc list-inside text-sm mt-2 ml-2 space-y-1">
-                                <li>自然语言对话、多轮上下文理解</li>
-                                <li>代码生成、调试、解释</li>
-                                <li>文案创作、创意故事、诗歌生成</li>
-                                <li>翻译、摘要、知识问答</li>
+                                <li>${aiConfigs[currentAI].features}</li>
                             </ul>
                             <p class="text-xs text-gray-500 mt-2">请输入您的问题或指令，支持直接触发功能（如“生成Python冒泡排序代码”）</p>
                         </div>
@@ -1132,8 +971,8 @@ print("排序后:", arr)
                 } else {
                     messageHtml = `
                         <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
-                                <i class="fa fa-robot"></i>
+                            <div class="w-10 h-10 rounded-full bg-${aiConfigs[currentAI].color} flex items-center justify-center text-white flex-shrink-0">
+                                <i class="fa ${aiConfigs[currentAI].icon}"></i>
                             </div>
                             <div class="message-card bg-white">
                                 ${message.content}
@@ -1164,18 +1003,15 @@ print("排序后:", arr)
         
         // 显示通知
         function showNotification(message) {
-            // 创建通知元素
             const notification = document.createElement('div');
             notification.className = 'fixed bottom-4 right-4 bg-dark text-white px-4 py-2 rounded-lg shadow-lg z-50 transform translate-y-10 opacity-0 transition-all duration-300';
             notification.textContent = message;
             document.body.appendChild(notification);
             
-            // 显示通知
             setTimeout(() => {
                 notification.classList.remove('translate-y-10', 'opacity-0');
             }, 10);
             
-            // 3秒后隐藏通知
             setTimeout(() => {
                 notification.classList.add('translate-y-10', 'opacity-0');
                 setTimeout(() => {
@@ -1186,14 +1022,16 @@ print("排序后:", arr)
         
         // 保存到本地存储
         function saveToLocalStorage() {
-            localStorage.setItem('seeGptChatHistory', JSON.stringify(chatHistory));
-            localStorage.setItem('seeGptFavorites', JSON.stringify(favorites));
+            localStorage.setItem('allAiChatHistory', JSON.stringify(chatHistory));
+            localStorage.setItem('allAiFavorites', JSON.stringify(favorites));
+            localStorage.setItem('allAiCurrentAI', currentAI);
         }
         
         // 从本地存储加载
         function loadFromLocalStorage() {
-            const savedHistory = localStorage.getItem('seeGptChatHistory');
-            const savedFavorites = localStorage.getItem('seeGptFavorites');
+            const savedHistory = localStorage.getItem('allAiChatHistory');
+            const savedFavorites = localStorage.getItem('allAiFavorites');
+            const savedAI = localStorage.getItem('allAiCurrentAI');
             
             if (savedHistory) {
                 chatHistory = JSON.parse(savedHistory);
@@ -1201,10 +1039,12 @@ print("排序后:", arr)
             
             if (savedFavorites) {
                 favorites = JSON.parse(savedFavorites);
-                updateFavorites();
             }
             
-            updateHistoryList();
+            if (savedAI) {
+                currentAI = savedAI;
+                switchAI(currentAI);
+            }
         }
         
         // 初始化应用
